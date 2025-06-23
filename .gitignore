@@ -1,0 +1,22 @@
+# Zig build artifacts
+zig-cache/
+zig-out/
+
+# VSCode settings
+.vscode/
+
+# JetBrains IDEs
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Optional: ignore log files
+*.log
