@@ -19,7 +19,7 @@ jobs:
           version: master # Or specify a version, e.g. 0.12.0
 
       - name: Build zigzag
-        run: zig build -Drelease-fast=true
+        run: zig build
 
       - name: Prepare release asset
         run: |
