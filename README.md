@@ -6,7 +6,6 @@
 
 <p align="center">
   <b>CLI tool to bookmark files and open them in your editor of choice</b><br>
-  <a href="https://github.com/tobiasklemp/zigzag/actions"><img src="https://github.com/tobiasklemp/zigzag/workflows/Build/badge.svg" alt="Build Status"></a>
   <a href="https://github.com/tobiasklemp/zigzag/releases"><img src="https://img.shields.io/github/v/release/tobiasklemp/zigzag" alt="Latest Release"></a>
   <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/zig-0.12.0-orange" alt="zig"></a>
 </p>
