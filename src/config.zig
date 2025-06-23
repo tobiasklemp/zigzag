@@ -54,7 +54,7 @@ fn getConfigPath(allocator: Allocator) ![]const u8 {
 
     const home_dir = if (builtin.os.tag == .windows)
         std.process.getEnvVarOwned(allocator, "USERPROFILE") catch
-            std.process.getEnvVarOwned(allocator, "HOMEDRIVE") // + HOMEPATH
+            try std.process.getEnvVarOwned(allocator, "HOMEDRIVE") // + HOMEPATH
     else
         std.process.getEnvVarOwned(allocator, "HOME") catch return "";
 
