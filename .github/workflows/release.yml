@@ -1,0 +1,38 @@
+name: Build and Release zigzag
+
+on:
+  push:
+    tags:
+      - "*" # Run on any tag
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Zig
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: master # Or specify a version, e.g. 0.12.0
+
+      - name: Build zigzag
+        run: zig build -Drelease-fast=true
+
+      - name: Prepare release asset
+        run: |
+          mkdir -p dist
+          cp zig-out/bin/zigzag dist/
+          cd dist
+          tar czvf ../zigzag-${{ github.ref_name }}-linux-amd64.tar.gz zigzag
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: zigzag ${{ github.ref_name }}
+          files: zigzag-${{ github.ref_name }}-linux-amd64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
