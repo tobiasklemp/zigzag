@@ -35,8 +35,8 @@ jobs:
 
       - name: Build zigzag
         run: |
-          zig build -Drelease-fast=true \
-            -Dtarget=${{ matrix.zig_target }}
+          zig build --release=fast \
+            -target=${{ matrix.zig_target }}
 
       - name: Prepare release asset (Linux/macOS)
         if: matrix.os != 'windows-latest'
