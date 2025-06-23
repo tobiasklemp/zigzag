@@ -2,8 +2,6 @@
   <img src="https://raw.githubusercontent.com/tobiasklemp/zigzag/main/assets/logo_zigzag.png" alt="zigzag logo" width="120" />
 </p>
 
-<h1 align="center">zigzag</h1>
-
 <p align="center">
   <b>CLI tool to bookmark files and open them in your editor of choice</b><br>
   <a href="https://github.com/tobiasklemp/zigzag/releases"><img src="https://img.shields.io/github/v/release/tobiasklemp/zigzag" alt="Latest Release"></a>
