@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <b>CLI tool to bookmark files and open them in your editor of choice</b><br>
+  <b>CLI tool to bookmark files and open them in your editor of choice. Inspired by <a href="https://github.com/ThePrimeagen/harpoon">Harpoon</a></b><br>
   <a href="https://github.com/tobiasklemp/zigzag/releases"><img src="https://img.shields.io/github/v/release/tobiasklemp/zigzag" alt="Latest Release"></a>
   <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/zig-0.12.0-orange" alt="zig"></a>
 </p>
@@ -17,6 +17,13 @@
 - 🛠️ **Configurable** editor and arguments (JSON config)
 - 🖥️ **Simple CLI** with add, show, and open commands
 - 🧩 **Zed integration** via tasks
+
+---
+
+## Disclaimer
+
+This is a small weekend project and I'm fairly new to zig. This repo is a hot mess i guess. For now it does what i need it to do. Hopefully zed gets a more comprehensive extension api that allows to do stuff like this soon.
+The task approach works but it is not ideal. Launching a task takes aprox 500ms, zigzag does its work in a few ms, so a native extension in zed will most certainly be more responsive.
 
 ---
 
