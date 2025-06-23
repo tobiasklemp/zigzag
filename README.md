@@ -149,7 +149,7 @@ Add these tasks to your `.zed/tasks.json` for seamless workflow:
 ## 👤 Author
 
 - **Tobias Klemp**
-  [@tobiasklemp](https://github.com/tklemp)
+  [@tobiasklemp](https://github.com/tobiasklemp)
 
 ---
 
