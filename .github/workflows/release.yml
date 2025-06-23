@@ -19,6 +19,10 @@ jobs:
             zig_target: x86_64-macos
             archive_ext: tar.gz
             bin_ext: ""
+          - os: macos-latest
+            zig_target: aarch64-macos
+            archive_ext: tar.gz
+            bin_ext: ""
           - os: windows-latest
             zig_target: x86_64-windows
             archive_ext: zip
@@ -35,8 +39,7 @@ jobs:
 
       - name: Build zigzag
         run: |
-          zig build --release=fast \
-            -Dtarget=${{ matrix.zig_target }}
+          zig build --release=fast -Dtarget=${{ matrix.zig_target }}
 
       - name: Prepare release asset (Linux/macOS)
         if: matrix.os != 'windows-latest'
