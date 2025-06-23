@@ -136,6 +136,16 @@ Add these tasks to your `.zed/tasks.json` for seamless workflow:
 ]
 ```
 
+Then you can add keymaps for the tasks:
+
+```json
+...
+      "space h e": ["task::Spawn", { "task_name": "Show bookmarks" }],
+      "space h a": ["task::Spawn", { "task_name": "Add bookmark" }],
+      "space 1": ["task::Spawn", { "task_name": "Open bookmark 1" }],
+...
+```
+
 ## 🛠️ Advanced
 
 - **Bookmarks are stored per worktree** for easy project-based navigation.
