@@ -1,5 +1,5 @@
 # Zig build artifacts
-zig-cache/
+.zig-cache/
 zig-out/
 
 # VSCode settings
