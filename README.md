@@ -34,7 +34,7 @@ The task approach works but it is not ideal. Launching a task takes aprox 500ms,
 Download a release from [GitHub Releases](https://github.com/tobiasklemp/zigzag/releases) or build from source:
 
 ```sh
-zig build -Drelease=fast
+zig build -Doptimize=ReleaseFast
 cp zig-out/bin/zigzag /usr/local/bin/
 ```
 
