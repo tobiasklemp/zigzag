@@ -178,24 +178,24 @@ fn replacePlaceholders(
     row: usize,
     column: usize,
 ) ![]u8 {
-    var list = std.ArrayList(u8).init(allocator);
-    defer list.deinit();
+    var list = try std.ArrayList(u8).initCapacity(allocator, 0);
+    defer list.deinit(allocator);
 
     var i: usize = 0;
     while (i < template.len) {
         if (std.mem.startsWith(u8, template[i..], "{file_path}")) {
-            try list.appendSlice(file_path);
+            try list.appendSlice(allocator, file_path);
             i += "{file_path}".len;
         } else if (std.mem.startsWith(u8, template[i..], "{row}")) {
-            try list.writer().print("{}", .{row});
+            try list.writer(allocator).print("{}", .{row});
             i += "{row}".len;
         } else if (std.mem.startsWith(u8, template[i..], "{column}")) {
-            try list.writer().print("{}", .{column});
+            try list.writer(allocator).print("{}", .{column});
             i += "{column}".len;
         } else {
-            try list.append(template[i]);
+            try list.append(allocator, template[i]);
             i += 1;
         }
     }
-    return list.toOwnedSlice();
+    return list.toOwnedSlice(allocator);
 }

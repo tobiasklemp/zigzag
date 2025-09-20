@@ -15,16 +15,13 @@ pub const WorktreeStore = struct {
         const appDataDir = try fs.getAppDataDir(allocator, "zigzag");
         defer allocator.free(appDataDir);
 
-        const sanitizedPath = try sanitizePath(allocator, worktreeRootPath);
-        defer allocator.free(sanitizedPath);
-
-        const filePath = try std.fmt.allocPrint(allocator, "{s}/{s}.txt", .{ appDataDir, sanitizedPath });
+        const filePath = try getWorktreeStoreFilePath(allocator, worktreeRootPath);
         defer allocator.free(filePath);
 
         const cwd = fs.cwd();
 
         if (cwd.openFile(filePath, .{ .mode = .read_write })) |file| {
-            const fileSize = (try file.metadata()).size();
+            const fileSize = (try file.stat()).size;
             if (fileSize == 0) {
                 return WorktreeStore{
                     .marks = &[_]Bookmark{},
@@ -78,30 +75,30 @@ pub const WorktreeStore = struct {
     }
 
     pub fn addBookmark(self: *WorktreeStore, allocator: Allocator, bookmark: Bookmark) !void {
-        var list = std.ArrayList(Bookmark).init(allocator);
-        defer list.deinit();
+        var list = try ArrayList(Bookmark).initCapacity(allocator, 0);
+        defer list.deinit(allocator);
         for (self.marks) |mark| {
-            try list.append(mark);
+            try list.append(allocator, mark);
         }
-        try list.append(bookmark);
+        try list.append(allocator, bookmark);
         self.marks = list.items;
         try self.save(allocator);
     }
 };
 
 pub fn join(allocator: Allocator, list: []Bookmark) ![]const u8 {
-    var marks = std.ArrayList(Bookmark).init(allocator);
-    defer marks.deinit();
+    var marks = try std.ArrayList(Bookmark).initCapacity(allocator, 0);
+    defer marks.deinit(allocator);
     for (list) |mark| {
-        try marks.append(mark);
+        try marks.append(allocator, mark);
     }
-    var joined = std.ArrayList(u8).init(allocator);
+    var joined = try std.ArrayList(u8).initCapacity(allocator, 0);
     for (marks.items) |item| {
-        try joined.appendSlice(item.filePath);
+        try joined.appendSlice(allocator, item.filePath);
         const appendix = try std.fmt.allocPrint(allocator, ":{d}:{d}\n", .{ item.line, item.col });
-        try joined.appendSlice(appendix);
+        try joined.appendSlice(allocator, appendix);
     }
-    return try joined.toOwnedSlice();
+    return try joined.toOwnedSlice(allocator);
 }
 
 pub fn addBookmark(allocator: Allocator, worktreeRootPath: []const u8, bookmark: Bookmark) !void {
@@ -115,19 +112,17 @@ pub fn addBookmark(allocator: Allocator, worktreeRootPath: []const u8, bookmark:
     try store.addBookmark(allocator, bookmark);
 }
 
-pub fn sanitizePath(allocator: std.mem.Allocator, path: []const u8) ![]u8 {
-    const sanitized = try allocator.dupe(u8, path);
-    for (sanitized) |*c| {
-        switch (c.*) {
-            '/', '\\', ':', '*', '?', '"', '<', '>', '|' => c.* = '_',
-            else => {},
-        }
-    }
-    return sanitized;
+/// Function to create a base64 representation of a filepath
+pub fn encodeFilePathToBase64(allocator: std.mem.Allocator, file_path: []const u8) ![]const u8 {
+    const encoded_len = std.base64.url_safe.Encoder.calcSize(file_path.len);
+    const encoded = try allocator.alloc(u8, encoded_len);
+
+    const result = std.base64.url_safe.Encoder.encode(encoded, file_path);
+    return result;
 }
 
 fn parseBookmarks(allocator: std.mem.Allocator, input: []const u8) !std.ArrayList(Bookmark) {
-    var list = std.ArrayList(Bookmark).init(allocator);
+    var list = try std.ArrayList(Bookmark).initCapacity(allocator, 0);
 
     var lines = std.mem.splitSequence(u8, input, "\n");
     while (lines.next()) |line| {
@@ -144,7 +139,7 @@ fn parseBookmarks(allocator: std.mem.Allocator, input: []const u8) !std.ArrayLis
         // Duplicate filePath to own the memory
         const filePathCopy = try allocator.dupe(u8, filePath);
 
-        try list.append(Bookmark{
+        try list.append(allocator, Bookmark{
             .filePath = filePathCopy,
             .line = lineNum,
             .col = colNum,
@@ -157,7 +152,7 @@ pub fn getWorktreeStoreFilePath(allocator: Allocator, worktreeRootPath: []const 
     const appDataDir = try fs.getAppDataDir(allocator, "zigzag");
     defer allocator.free(appDataDir);
 
-    const sanitizedPath = try sanitizePath(allocator, worktreeRootPath);
+    const sanitizedPath = try encodeFilePathToBase64(allocator, worktreeRootPath);
     defer allocator.free(sanitizedPath);
 
     return try std.fmt.allocPrint(allocator, "{s}/{s}.txt", .{ appDataDir, sanitizedPath });
